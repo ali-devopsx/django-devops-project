@@ -1,0 +1,53 @@
+services: # Define the programs (services) our project needs
+
+  db: # 1. Database service (PostgreSQL)
+    image: postgres:15-alpine # Use the official Postgres image (small version)
+    restart: unless-stopped # Restart automatically if it crashes
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/ # Save data here so it's not lost
+    env_file:
+      - .env # Load database name and password from .env file
+    healthcheck: # Check if the database is ready to work
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s # Check every 10 seconds
+      timeout: 5s # Wait 5 seconds for a response
+      retries: 5 # Try 5 times before giving up
+
+
+
+
+  redis: # 2. Redis service (for fast caching)
+    image: redis:7-alpine # Use a small official Redis image
+    restart: unless-stopped # Restart automatically
+    healthcheck: # Check if Redis is alive
+      test: ["CMD", "redis-cli", "ping"] # Send a 'ping' to see if it answers
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+
+
+
+  web: # 3. Our Django application
+    build: . # Build the image using our local Dockerfile
+    restart: unless-stopped # Restart automatically
+    volumes:
+      - static_volume:/app/staticfiles # Storage for CSS and JS files
+      - media_volume:/app/media # Storage for uploaded images
+    ports:
+      - "8000:8000" # Open port 8000 to see the website in the browser
+    depends_on: # Don't start the web until others are ready
+      db:
+        condition: service_healthy # Wait for database to be "healthy"
+      redis:
+        condition: service_healthy # Wait for Redis to be "healthy"
+    env_file:
+      - .env # Use the same settings file
+
+
+
+
+volumes: # Define storage areas that Docker manages
+  postgres_data: # Area for database files
+  static_volume: # Area for static files
+  media_volume: # Area for media files
