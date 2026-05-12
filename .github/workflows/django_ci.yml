@@ -15,9 +15,11 @@ jobs:
       postgres:  # database service
         image: postgres:15-alpine  # postgres image
         env:
-          POSTGRES_DB: mydb  # database name
-          POSTGRES_USER: ali  # database user (fixed typo)
-          POSTGRES_PASSWORD: root  # database password
+          POSTGRES_DB: mydb
+          POSTGRES_USER: ali
+          POSTGRES_PASSWORD: root
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
         ports:
           - 5432:5432  # expose port
 
