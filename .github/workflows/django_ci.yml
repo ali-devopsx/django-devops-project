@@ -79,6 +79,6 @@ jobs:
           context: .  # project folder
           push: true  # push to docker hub
           tags: |
-             ${{ secrets.DOCKER_USERNAME }}/django-app:latest  # image name
-           
-             ${{ secrets.DOCKER_USERNAME }}/django-app:${{ github.sha }}  # image name with commit ID
+             ${{ secrets.DOCKER_USERNAME }}/production-django-app:latest
+
+             ${{ secrets.DOCKER_USERNAME }}/production-django-app:${{ github.sha }}
