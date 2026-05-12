@@ -15,15 +15,15 @@ jobs:
       postgres:  # database service
         image: postgres:15-alpine  # postgres image
         env:
-          POSTGRES_DB: github_actions  # database name
-          POSTGRES_USER: github_actions  # database user (fixed typo)
-          POSTGRES_PASSWORD: github_actions  # database password
+          POSTGRES_DB: mydb  # database name
+          POSTGRES_USER: ali  # database user (fixed typo)
+          POSTGRES_PASSWORD: root  # database password
         ports:
           - 5432:5432  # expose port
 
         # wait until database is ready
         options: >-
-          --health-cmd pg_isready
+          --health-cmd pg_isready -U ali
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -46,7 +46,8 @@ jobs:
       - name: Run Tests  # run django tests
         env:
           DJANGO_SETTINGS_MODULE: core.settings  # django settings
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}  # db from secrets
+         # DATABASE_URL: ${{ secrets.DATABASE_URL }}  # db from secrets
+          DATABASE_URL: postgres://ali:root@localhost:5432/mydb
         run: |
           python manage.py migrate
           python manage.py test
