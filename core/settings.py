@@ -79,7 +79,8 @@ DATABASES = {
         'USER': 'ali',
         'PASSWORD': 'root',
         'PORT': '5432',
-        'HOST': 'db',
+        'HOST': 'localhost',
+        #'HOST': 'db',
     }
 }
 
